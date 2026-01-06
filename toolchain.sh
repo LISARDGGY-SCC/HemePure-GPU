@@ -24,11 +24,17 @@ PREPARE(){
 		SYSTEM="$3"
 	fi
 
-	if [ ! -f /tmp/cmake.sh ]
+	if [ ! -d "${INSTALL_PATH}/cmake-${VERSION}-${SYSTEM}" ]
 	then
-		curl -o /tmp/cmake.sh "https://cmake.org/files/v3.29/cmake-${VERSION}-${SYSTEM}.sh"
+
+		if [ ! -f /tmp/cmake.sh ]
+		then
+			curl -o /tmp/cmake.sh "https://cmake.org/files/v3.29/cmake-${VERSION}-${SYSTEM}.sh"
+		fi
+
+		sh /tmp/cmake.sh --prefix="$INSTALL_PATH" --include-subdir --skip-license
 	fi
-	sh /tmp/cmake.sh --prefix="$INSTALL_PATH" --include-subdir --skip-license
+
 	PATH="${INSTALL_PATH}/cmake-${VERSION}-${SYSTEM}/bin"${PATH:+:"$PATH"}
 
 	echo '#!/bin/sh' > env.sh
@@ -37,8 +43,6 @@ PREPARE(){
 	PATH="${INSTALL_PATH}/cmake-${VERSION}-${SYSTEM}/bin"\${PATH:+:"\$PATH"}
 	export PATH
 	EOF
-
-	chmod +x env.sh
 
 	export PATH
 }
