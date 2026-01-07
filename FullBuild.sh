@@ -14,6 +14,10 @@ MODULES(){
 	if module avail > /dev/null 2> /dev/null
 	then
 		module purge
+
+		# TWCC
+		module load nvhpc-24.11_hpcx-2.20_cuda-12.6
+
 	else
 		echo "No modules, skipping loading"
 	fi
@@ -27,7 +31,7 @@ DEPbuild(){
 	echo "Start building dependencies..."
 	echo ""
 
-	cmake -B dep/build dep
+	cmake -B dep/build dep --refresh
 	cmake --build dep/build -j
 }
 
@@ -65,9 +69,13 @@ SRCbuild(){
 	esac
 
 	cmake -B src/build src \
+		--install-prefix="$(pwd)/hemelabgpu-${VARIENT}" \
+		--fresh \
 		-DHEMELB_GPU_BACKEND=CUDA \
+		-DCMAKE_CUDA_ARCHITECTURES=70 \ # V100
 		"$OPTION"
 	cmake --build src/build -j
+	cmake --install src/build
 }
 
 if [ "$1" = "--help" ]
