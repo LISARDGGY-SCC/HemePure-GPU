@@ -31,7 +31,7 @@ DEPbuild(){
 	echo "Start building dependencies..."
 	echo ""
 
-	cmake -B dep/build dep --refresh
+	cmake -B dep/build dep --fresh
 	cmake --build dep/build -j
 }
 
