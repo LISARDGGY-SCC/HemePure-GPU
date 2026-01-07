@@ -71,7 +71,7 @@ SRCbuild(){
 	esac
 
 	cmake -B src/build src \
-		--install-prefix="$(pwd)/hemelabgpu-${VARIENT}" \
+		--install-prefix="$(pwd)/hemelabgpu${VARIENT:+-$VARIENT}" \
 		--fresh \
 		-DHEMELB_GPU_BACKEND=CUDA \
 		-DCMAKE_CUDA_ARCHITECTURES=70 \
