@@ -52,7 +52,8 @@ DEPbuild(){
 		-DCMAKE_CXX_COMPILER="${CXX}" \
 		-DCMAKE_CUDA_COMPILER="$(which nvcc)" \
 		-DCMAKE_CUDA_HOST_COMPILER="$(which g++)" \
-		-DCMAKE_CUDA_ARCHITECTURES="${CUVER}"
+		-DCMAKE_CUDA_ARCHITECTURES="${CUVER}" \
+		-DCMAKE_POSITION_INDEPENDENT_CODE=ON
 	cmake --build dep/build -j
 	# -j 1 if something went wrong
 
