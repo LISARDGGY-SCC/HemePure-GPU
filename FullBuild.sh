@@ -54,6 +54,12 @@ DEPbuild(){
 		-DCMAKE_CUDA_HOST_COMPILER="$(which g++)" \
 		-DCMAKE_CUDA_ARCHITECTURES="${CUVER}"
 	cmake --build dep/build -j
+	# -j 1 if something went wrong
+
+	echo ""
+	echo "Done building dependencies"
+	echo ""
+
 }
 
 SRCbuild(){
@@ -125,6 +131,11 @@ SRCbuild(){
 		"$@"
 	cmake --build src/build -j
 	cmake --install src/build
+
+	echo ""
+	printf "Done building src with varient '%s'\n" "$VARIENT"
+	echo ""
+
 }
 
 if [ "$1" = "--help" ]
