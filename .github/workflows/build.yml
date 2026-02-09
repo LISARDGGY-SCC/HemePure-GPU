@@ -2,9 +2,9 @@ name: HemePure GPU Build
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: [ "main", "master", "HIP-CUDA-ROCM_SL" ]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: [ "main", "master", "HIP-CUDA-ROCM_SL" ]
   workflow_dispatch:
 
 jobs:
