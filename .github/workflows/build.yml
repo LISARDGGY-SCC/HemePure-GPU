@@ -52,7 +52,7 @@ jobs:
 
     - name: Build HemePure GPU (${{ matrix.variant == '' && 'Default' || matrix.variant }})
       run: |
-        chmod +x ./Fullbuild.sh
+        chmod +x ./FullBuild.sh
 
         . ./env.sh
 
@@ -67,7 +67,7 @@ jobs:
         echo "Starting Build..."
 
         if [ -z "${{ matrix.variant }}" ]; then
-          ./Fullbuild.sh
+          ./FullBuild.sh
         else
-          ./Fullbuild.sh "${{ matrix.variant }}"
+          ./FullBuild.sh "${{ matrix.variant }}"
         fi
