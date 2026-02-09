@@ -1,0 +1,72 @@
+name: HemePure GPU Build
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build-cuda:
+    name: Build CUDA (x86_64)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: ["", "PP", "VP"]
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install System Dependencies (OpenMPI)
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential openmpi-bin libopenmpi-dev
+
+    - name: Install CUDA Toolkit
+      uses: Jimver/cuda-toolkit@v0.2.19
+      id: cuda-toolkit
+      with:
+        cuda: '12.6.0'
+        linux-local-args: '["--toolkit"]'
+
+    - name: Verify CUDA Installation
+      run: |
+        nvcc --version
+        echo "CUDA_PATH=$CUDA_PATH"
+
+    - name: Prepare Toolchain (CMake)
+      run: |
+        chmod +x ./toolchain.sh
+        ./toolchain.sh
+
+        if [ ! -f env.sh ]; then
+          echo "Error: env.sh was not generated."
+          exit 1
+        fi
+
+    - name: Build HemePure GPU (${{ matrix.variant == '' && 'Default' || matrix.variant }})
+      run: |
+        chmod +x ./Fullbuild.sh
+
+        . ./env.sh
+
+        which nvcc
+
+        export CC=mpicc
+        export CXX=mpicxx
+        export OMPI_CC=gcc
+        export OMPI_CXX=g++
+        export CUVER=70 # set V100 arch
+
+        echo "Starting Build..."
+
+        if [ -z "${{ matrix.variant }}" ]; then
+          ./Fullbuild.sh
+        else
+          ./Fullbuild.sh "${{ matrix.variant }}"
+        fi
