@@ -48,12 +48,19 @@ DEPbuild(){
 
 	cmake -B dep/build dep --fresh \
 		-DCMAKE_BUILD_TYPE=Release \
-		-DCMAKE_C_COMPILER=mpicc \
-		-DCMAKE_CXX_COMPILER=mpicxx \
+		-DCMAKE_C_COMPILER="${CC}" \
+		-DCMAKE_CXX_COMPILER="${CXX}" \
 		-DCMAKE_CUDA_COMPILER="$(which nvcc)" \
 		-DCMAKE_CUDA_HOST_COMPILER="$(which g++)" \
 		-DCMAKE_CUDA_ARCHITECTURES="${CUVER}" \
+		-DCMAKE_POSITION_INDEPENDENT_CODE=ON
 	cmake --build dep/build -j
+	# -j 1 if something went wrong
+
+	echo ""
+	echo "Done building dependencies"
+	echo ""
+
 }
 
 SRCbuild(){
@@ -111,8 +118,8 @@ SRCbuild(){
 		--fresh \
 		-DHEMELB_GPU_BACKEND=CUDA \
 		-DCMAKE_BUILD_TYPE=Release \
-		-DCMAKE_C_COMPILER=mpicc \
-		-DCMAKE_CXX_COMPILER=mpicxx \
+		-DCMAKE_C_COMPILER="${CC}" \
+		-DCMAKE_CXX_COMPILER="${CXX}" \
 		-DCMAKE_CUDA_COMPILER="$(which nvcc)" \
 		-DCMAKE_CUDA_HOST_COMPILER="$(which g++)" \
 		-DCMAKE_CUDA_ARCHITECTURES="${CUVER}" \
@@ -125,6 +132,11 @@ SRCbuild(){
 		"$@"
 	cmake --build src/build -j
 	cmake --install src/build
+
+	echo ""
+	printf "Done building src with varient '%s'\n" "$VARIENT"
+	echo ""
+
 }
 
 if [ "$1" = "--help" ]
