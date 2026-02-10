@@ -50,21 +50,25 @@ jobs:
           exit 1
         fi
 
+    - name: Patch Script for CI Memory Limits
+      run: |
+        sed -i 's/ -j/ --verbose/g' FullBuild.sh
+        # check that the patch was applied correctly
+        grep "cmake --build" FullBuild.sh
+
     - name: Build HemePure GPU (${{ matrix.variant == '' && 'Default' || matrix.variant }})
       run: |
         chmod +x ./FullBuild.sh
-
         . ./env.sh
-
-        sed -i 's/ -j/ --verbose/g' FullBuild.sh
-
-        sed -i 's/-DCMAKE_CUDA_ARCHITECTURES="${CUVER}" \\/-DCMAKE_CUDA_ARCHITECTURES="${CUVER}"/g' FullBuild.sh
 
         export CC=mpicc
         export CXX=mpicxx
         export OMPI_CC=gcc
         export OMPI_CXX=g++
-        export CUVER=70 # set V100 arch
+        export CUVER=70
+
+        # make sure pkg-config can find OpenMPI
+        export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
 
         echo "Starting Build..."
 
