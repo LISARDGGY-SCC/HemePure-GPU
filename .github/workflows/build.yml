@@ -70,6 +70,11 @@ jobs:
         # make sure pkg-config can find OpenMPI
         export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
 
+        export CPATH="/usr/lib/x86_64-linux-gnu/openmpi/include:$CPATH"
+
+        # verify that the OpenMPI include path exists
+        ls -d /usr/lib/x86_64-linux-gnu/openmpi/include || echo "MPI Include path not found!"
+
         echo "Starting Build..."
 
         if [ -z "${{ matrix.variant }}" ]; then
