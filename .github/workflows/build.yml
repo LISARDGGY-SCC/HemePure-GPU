@@ -56,7 +56,9 @@ jobs:
 
         . ./env.sh
 
-        which nvcc
+        sed -i 's/ -j/ --verbose/g' FullBuild.sh
+
+        sed -i 's/-DCMAKE_CUDA_ARCHITECTURES="${CUVER}" \\/-DCMAKE_CUDA_ARCHITECTURES="${CUVER}"/g' FullBuild.sh
 
         export CC=mpicc
         export CXX=mpicxx
