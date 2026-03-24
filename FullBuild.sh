@@ -17,8 +17,14 @@ MODULES(){
 		module purge
 
 		# TWCC
-		module load nvhpc-24.11_hpcx-2.20_cuda-12.6
-		module load gcc10/10.2.1
+		# module load nvhpc-24.11_hpcx-2.20_cuda-12.6
+		# module load gcc10/10.2.1
+		# Romeo
+		# module load nvhpc/nvhpc-hpcx-cuda12/24.11
+		# module load gcc
+		# Iris
+        module load nvidia_hpc_sdk/24.7
+        module load gcc/11
 
 	else
 		echo "No modules, skipping loading"
@@ -31,7 +37,10 @@ MODULES(){
 	export OMPI_CXX=g++
 	export OMPI_FC=gfortran
 
-	export CUVER=70
+	# TWCC
+	# export CUVER=70
+	# Romeo or Iris
+	export CUVER=90
 	export CUDA_GRAPH=""
 }
 
