@@ -725,8 +725,11 @@ namespace hemelb
 					io::writers::xdr::XdrMemReader lReader(&blockData.front(), blockData.size());
 					ParseBlock(geometry, nextBlockToRead, lReader);
 
-					// This was done before, but 
+					// Keep block metadata when ParMETIS is enabled because we may re-read
+					// blocks after optimisation in RereadBlocks().
+#ifndef HEMELB_USE_PARMETIS
 					blockInformation.erase(nextBlockToRead);
+#endif
 				}
 			}
 
