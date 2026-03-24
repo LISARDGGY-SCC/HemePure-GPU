@@ -711,7 +711,10 @@ namespace hemelb
 				// simplest way to do that is by the filter below.
 				if( blockInformation.find(nextBlockToRead) != blockInformation.end()) {
 
-					MPI_Offset fileOffset = baseOffset + blockFileOffsets[nextBlockToRead];
+					if (blockFileOffsets.find(nextBlockToRead) == blockFileOffsets.end())
+						throw Exception() << "Missing file offset for block " << nextBlockToRead << ".";
+
+					MPI_Offset fileOffset = baseOffset + blockFileOffsets.at(nextBlockToRead);
 					auto nBytes = blockInformation.at(nextBlockToRead).first;
 
 					// Read data
@@ -734,8 +737,10 @@ namespace hemelb
 			}
 
 			// In the regular read, readBlock() and blockInformation would clear
-			readBlock.clear(); 
+			readBlock.clear();
+#ifndef HEMELB_USE_PARMETIS
 			blockFileOffsets.clear();
+#endif
 #ifndef HEMELB_USE_PARMETIS
 			blockInformation.clear();
 #endif
