@@ -711,7 +711,10 @@ namespace hemelb
 				// simplest way to do that is by the filter below.
 				if( blockInformation.find(nextBlockToRead) != blockInformation.end()) {
 
-					MPI_Offset fileOffset = baseOffset + blockFileOffsets[nextBlockToRead];
+					if (blockFileOffsets.find(nextBlockToRead) == blockFileOffsets.end())
+						throw Exception() << "Missing file offset for block " << nextBlockToRead << ".";
+
+					MPI_Offset fileOffset = baseOffset + blockFileOffsets.at(nextBlockToRead);
 					auto nBytes = blockInformation.at(nextBlockToRead).first;
 
 					// Read data
@@ -725,14 +728,19 @@ namespace hemelb
 					io::writers::xdr::XdrMemReader lReader(&blockData.front(), blockData.size());
 					ParseBlock(geometry, nextBlockToRead, lReader);
 
-					// This was done before, but 
+					// Keep block metadata when ParMETIS is enabled because we may re-read
+					// blocks after optimisation in RereadBlocks().
+#ifndef HEMELB_USE_PARMETIS
 					blockInformation.erase(nextBlockToRead);
+#endif
 				}
 			}
 
 			// In the regular read, readBlock() and blockInformation would clear
-			readBlock.clear(); 
+			readBlock.clear();
+#ifndef HEMELB_USE_PARMETIS
 			blockFileOffsets.clear();
+#endif
 #ifndef HEMELB_USE_PARMETIS
 			blockInformation.clear();
 #endif
