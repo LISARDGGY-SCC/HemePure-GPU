@@ -31,9 +31,9 @@ jobs:
       uses: Jimver/cuda-toolkit@v0.2.19
       id: cuda-toolkit
       with:
-        non-cuda-driver: true
         cuda: '12.6.0'
         method: 'network'
+        sub-packages: '["nvcc", "cudart-dev"]'
 
     - name: Verify CUDA Installation
       run: |
