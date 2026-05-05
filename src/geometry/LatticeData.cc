@@ -508,7 +508,7 @@ namespace hemelb
 			// These will be private to each thread
 			const auto maxThreads = omp_get_max_threads();
 			std::vector< std::vector< std::vector< site_t > > > threadLocalSharedDistributionLocations(maxThreads);
-			for (auto tid = 0; tid < maxThreads; ++tid)
+			for (decltype(maxThreads) tid = 0; tid < maxThreads; ++tid)
 			{
 				threadLocalSharedDistributionLocations[tid].resize(comms.Size());
 			}
@@ -610,7 +610,7 @@ namespace hemelb
 			#pragma omp parallel for 
 			for(unsigned int proc = 0; proc < comms.Size(); proc++) {
 				sharedFLocationForEachProc[proc].clear();
-				for(auto tid = 0; tid < maxThreads; tid++) { 
+				for(decltype(maxThreads) tid = 0; tid < maxThreads; tid++) { 
 				  sharedFLocationForEachProc[proc].insert( sharedFLocationForEachProc[proc].end(), threadLocalSharedDistributionLocations[ tid ][ proc ].begin(), threadLocalSharedDistributionLocations[ tid ][ proc ].end() );
 				}
 			}
