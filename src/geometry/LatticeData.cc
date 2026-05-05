@@ -506,11 +506,11 @@ namespace hemelb
 			neighbourIndices.resize(latticeInfo.GetNumVectors() * localFluidSites);
 
 			// These will be private to each thread
-			std::vector< std::vector< std::vector< site_t > > > threadLocalSharedDistributionLocations(omp_get_max_threads());
-			#pragma omp parallel 
+			const auto maxThreads = omp_get_max_threads();
+			std::vector< std::vector< std::vector< site_t > > > threadLocalSharedDistributionLocations(maxThreads);
+			for (decltype(maxThreads) tid = 0; tid < maxThreads; ++tid)
 			{
-				auto tid = omp_get_thread_num();
-				threadLocalSharedDistributionLocations[ tid ].resize(comms.Size());
+				threadLocalSharedDistributionLocations[tid].resize(comms.Size());
 			}
 #if 0
 			for (BlockTraverser blockTraverser(*this); blockTraverser.CurrentLocationValid(); blockTraverser.TraverseOne())
@@ -610,7 +610,7 @@ namespace hemelb
 			#pragma omp parallel for 
 			for(unsigned int proc = 0; proc < comms.Size(); proc++) {
 				sharedFLocationForEachProc[proc].clear();
-				for(unsigned int tid=0; tid < omp_get_max_threads(); tid++) { 
+				for(decltype(maxThreads) tid = 0; tid < maxThreads; tid++) { 
 				  sharedFLocationForEachProc[proc].insert( sharedFLocationForEachProc[proc].end(), threadLocalSharedDistributionLocations[ tid ][ proc ].begin(), threadLocalSharedDistributionLocations[ tid ][ proc ].end() );
 				}
 			}
