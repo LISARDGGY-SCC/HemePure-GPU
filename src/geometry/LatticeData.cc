@@ -507,10 +507,9 @@ namespace hemelb
 
 			// These will be private to each thread
 			std::vector< std::vector< std::vector< site_t > > > threadLocalSharedDistributionLocations(omp_get_max_threads());
-			#pragma omp parallel 
+			for (int tid = 0; tid < omp_get_max_threads(); ++tid)
 			{
-				auto tid = omp_get_thread_num();
-				threadLocalSharedDistributionLocations[ tid ].resize(comms.Size());
+				threadLocalSharedDistributionLocations[tid].resize(comms.Size());
 			}
 #if 0
 			for (BlockTraverser blockTraverser(*this); blockTraverser.CurrentLocationValid(); blockTraverser.TraverseOne())
